@@ -10,8 +10,8 @@ public class SeCancelStmt {
 
 	public SeCancelStmt(EPAdministrator admin) {
 		// on OrderPlacedEvent as ope set var_cancel_price = ope.price-0.50;
-		String stmt = "select timestamp, p.price as price, op.orderId from TickPrice#lastevent() as p, OrderPlaced#lastevent() as op, OrderCanceled#lastevent() as oc"
-				+ " where op.orderId > oc.orderId and p.price <= (op.price-0.50)";
+		String stmt = "select timestamp, p.price as price, orderId from TickPrice#lastevent() as p, OrderPlaced#lastevent() as op"
+				+ " where p.price <= (op.price-0.50)";
 
 		statement = admin.createEPL(stmt);
 	}

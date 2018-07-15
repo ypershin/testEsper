@@ -44,7 +44,7 @@ public class PrcThread extends Thread {
 					sa = line.split(",");
 					prc[1] = Double.parseDouble(sa[2]);
 
-					if (!blnRTH && sa[1].startsWith("08:30")) {
+					if (!blnRTH && sa[1].startsWith("07:30")) {
 						blnRTH = true;
 						prc[0] = prc[1];
 					}

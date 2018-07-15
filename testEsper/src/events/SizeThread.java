@@ -35,7 +35,7 @@ public class SizeThread extends Thread {
 			try {
 				while ((line = bf.readLine()) != null) {
 					sa = line.split(",");
-					if (!blnRTH && sa[1].startsWith("08:30"))
+					if (!blnRTH && sa[1].startsWith("07:30"))
 						blnRTH = true;
 
 					if (blnRTH) {

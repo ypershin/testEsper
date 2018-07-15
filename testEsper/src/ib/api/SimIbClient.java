@@ -30,12 +30,16 @@ public class SimIbClient {
 					orderId, price + 0.25));
 			engine.getEPRuntime().sendEvent(new OrderPlacedEvent(orderId++, price));
 
+			if (orderId == 3)
+				System.exit(0);
+
 		}
 	}
 
 	public void cancelOrder(int orderId, double price) {
 		log.info("order " + orderId + " cancelled, price " + price);
 		engine.getEPRuntime().sendEvent(new OrderCanceledEvent(orderId, price));
+		blnOrderPlaced = false;
 		// System.exit(0);
 	}
 
