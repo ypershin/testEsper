@@ -47,4 +47,5 @@ public class PrcEvent {
 				+ ", prcChg=" + prcChg + ", cumPrcChg=" + cumPrcChg + "]";
 	}
 
+
 }

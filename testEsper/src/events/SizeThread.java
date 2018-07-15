@@ -31,16 +31,27 @@ public class SizeThread extends Thread {
 			String line;
 			String[] sa;
 			boolean blnRTH = false;
+			int runPrev = 0, run = 0, size, cumSize = 0;
+			PrcThread prcThread = PrcThread.getInstance();
 
 			try {
 				while ((line = bf.readLine()) != null) {
 					sa = line.split(",");
-					if (!blnRTH && sa[1].startsWith("07:30"))
+					if (!blnRTH && sa[1].startsWith(Constants.START_TIME))
 						blnRTH = true;
 
 					if (blnRTH) {
-//						log.info(String.format("%s\t%s", sa[1], sa[3]));
-						engine.getEPRuntime().sendEvent(new SizeEvent("ESU8", sa[1], Integer.parseInt(sa[3])));
+						run = prcThread.getRun();
+
+						size = Integer.parseInt(sa[3]);
+						cumSize = run == runPrev ? cumSize + size : size;
+
+						SizeEvent se = new SizeEvent("ESU8", sa[1], run, size, cumSize);
+						log.info(se.toString());
+
+						engine.getEPRuntime().sendEvent(se);
+						runPrev = run;
+
 						Thread.sleep(Constants.THREAD_SLEEP_TIME);
 					}
 				}

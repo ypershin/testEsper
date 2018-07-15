@@ -26,7 +26,8 @@ public class SeCancelListnr implements UpdateListener {
 		// theEvent.get("symbol"), theEvent.get("price"),
 		// theEvent.get("size")));
 
-		m_client.cancelOrder((int) theEvent.get("orderId"), (double) theEvent.get("price"));
+		m_client.cancelOrder((String) theEvent.get("symbol"), (String) theEvent.get("timestamp"),
+				(double) theEvent.get("price"), (int) theEvent.get("orderId"));
 
 	}
 

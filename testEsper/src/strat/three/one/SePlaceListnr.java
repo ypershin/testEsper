@@ -27,7 +27,7 @@ public class SePlaceListnr implements UpdateListener {
 		// theEvent.get("size")));
 
 		m_client.placeOrder((String) theEvent.get("symbol"), (String) theEvent.get("timestamp"),
-				(double) theEvent.get("price"), (int) theEvent.get("size"));
+				(double) theEvent.get("price"), (int) theEvent.get("cumSize"));
 
 	}
 

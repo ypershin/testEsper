@@ -17,14 +17,13 @@ public class PrcThread extends Thread {
 
 	private static final Logger log = LoggerFactory.getLogger(PrcThread.class);
 
+	private static PrcThread prcThread = null;
+
 	private EPServiceProvider engine;
 	private String fileName, ticker;
 	private int run = 0;
 
-	public PrcThread(EPServiceProvider engine, String fileName, String ticker) {
-		this.engine = engine;
-		this.fileName = fileName;
-		this.ticker = ticker;
+	private PrcThread() {
 	}
 
 	@Override
@@ -37,6 +36,8 @@ public class PrcThread extends Thread {
 			double[] prc = new double[2];
 			double prcChg, cumPrcChg = 0., signPrev = 0;
 
+			int size, cumSize = 0;
+
 			try {
 				// skip the first line
 				line = bf.readLine();
@@ -44,22 +45,34 @@ public class PrcThread extends Thread {
 					sa = line.split(",");
 					prc[1] = Double.parseDouble(sa[2]);
 
-					if (!blnRTH && sa[1].startsWith("07:30")) {
+					if (!blnRTH && sa[1].startsWith(Constants.START_TIME)) {
 						blnRTH = true;
 						prc[0] = prc[1];
 					}
 
 					if (blnRTH) {
 						prcChg = prc[1] - prc[0];
+
+						size = Integer.parseInt(sa[3]);
+
 						if (!(prcChg == 0. || Math.signum(prcChg) == signPrev)) {
 							run += 1;
 							cumPrcChg = prcChg;
-						} else
+							cumSize = size;
+						} else {
 							cumPrcChg += prcChg;
+							cumSize += size;
+						}
 
 						PrcEvent pe = new PrcEvent(ticker, sa[1], prc[1], run, prcChg, cumPrcChg);
-						log.info(pe.toString());
+						//log.info(pe.toString());
 						engine.getEPRuntime().sendEvent(pe);
+						
+						SizeEvent se = new SizeEvent("ESU8", sa[1], run, size, cumSize);
+						//log.info(se.toString());
+						engine.getEPRuntime().sendEvent(se);
+						
+						
 						signPrev = Math.signum(prcChg);
 						prc[0] = prc[1];
 						Thread.sleep(Constants.THREAD_SLEEP_TIME);
@@ -81,6 +94,25 @@ public class PrcThread extends Thread {
 	public int getRun() {
 		return run;
 	}
-	
-	
+
+	public void setEngine(EPServiceProvider engine) {
+		this.engine = engine;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
+	}
+
+	public static PrcThread getInstance() {
+		if (prcThread == null)
+			prcThread = new PrcThread();
+
+		return prcThread;
+
+	}
+
 }
